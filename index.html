@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pear Skate Clo.</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
@@ -17,9 +16,8 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f0f0f0;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
         #loading-screen {
@@ -39,7 +37,7 @@
         #app-container {
             display: none;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
         }
         #app-container.visible { display: flex; }
@@ -49,7 +47,6 @@
             flex-shrink: 0;
             z-index: 15;
             background: #7388A3;
-            padding-top: var(--safe-top, 0px);
         }
 
         .header-top {
@@ -217,7 +214,7 @@
         .slideshow {
             position: relative;
             width: 100%;
-            height: calc(100vh - 122px - var(--safe-top, 0px));
+            height: calc(100vh - 122px);
             flex-shrink: 0;
             overflow: hidden;
             touch-action: pan-y;
@@ -331,6 +328,7 @@
             align-items: center;
             justify-content: center;
             gap: 16px;
+            min-height: calc(100vh - 122px);
         }
         .dev-page.active { display: flex; }
         .dev-page h2 { font-size: 24px; color: #333; }
@@ -340,7 +338,7 @@
 <body>
 
     <div id="loading-screen">
-        <img src="birka.png" alt="Loading">
+        <img src="assets/birka.png" alt="Loading">
     </div>
 
     <div id="app-container">
@@ -348,19 +346,19 @@
         <div class="header">
             <div class="header-top">
                 <button class="menu-btn" onclick="toggleMenu()">
-                    <img src="menu.png" alt="Меню">
+                    <img src="assets/menu.png" alt="Меню">
                 </button>
 
                 <div class="logo-wrapper" onclick="goHome()">
-                    <img src="sticker.png" alt="Pear Skate Clo.">
+                    <img src="assets/sticker.png" alt="Pear Skate Clo.">
                 </div>
 
                 <div class="header-right">
                     <button class="icon-btn" onclick="openPage('korzina')">
-                        <img src="iconkorzina.png" alt="Корзина">
+                        <img src="assets/iconkorzina.png" alt="Корзина">
                     </button>
                     <button class="icon-btn" onclick="openPage('profile')">
-                        <img src="iconprofile.png" alt="Профиль">
+                        <img src="assets/iconprofile.png" alt="Профиль">
                     </button>
                 </div>
             </div>
@@ -372,9 +370,9 @@
                 <div class="home-scroll">
                     <div class="slideshow" id="slideshow">
                         <div class="slideshow-track" id="slideshow-track">
-                            <div class="slide"><img src="sadtree.png" alt="Slide 1"></div>
-                            <div class="slide"><img src="voda.png" alt="Slide 2"></div>
-                            <div class="slide"><img src="sadtree.png" alt="Slide 1 clone"></div>
+                            <div class="slide"><img src="assets/sadtree.png" alt="Slide 1"></div>
+                            <div class="slide"><img src="assets/voda.png" alt="Slide 2"></div>
+                            <div class="slide"><img src="assets/sadtree.png" alt="Slide 1 clone"></div>
                         </div>
                         <div class="slideshow-indicators">
                             <div class="indicator active" id="ind-0"></div>
@@ -385,19 +383,19 @@
                     <div class="categories-section">
                         <div class="category-block">
                             <div class="category-title">Худи</div>
-                            <div class="carousel" data-image="hoodie.png" data-count="6">
+                            <div class="carousel" data-image="assets/hoodie.png" data-count="6">
                                 <div class="carousel-track"></div>
                             </div>
                         </div>
                         <div class="category-block">
                             <div class="category-title">Футболки</div>
-                            <div class="carousel" data-image="tshirt.png" data-count="6">
+                            <div class="carousel" data-image="assets/tshirt.png" data-count="6">
                                 <div class="carousel-track"></div>
                             </div>
                         </div>
                         <div class="category-block">
                             <div class="category-title">Штаны</div>
-                            <div class="carousel" data-image="pants.png" data-count="6">
+                            <div class="carousel" data-image="assets/pants.png" data-count="6">
                                 <div class="carousel-track"></div>
                             </div>
                         </div>
@@ -439,26 +437,6 @@
     </div>
 
     <script>
-        const tg = window.Telegram?.WebApp;
-
-        function applySafeArea() {
-            let top = 0;
-            if (tg && tg.safeAreaInset && tg.safeAreaInset.top) {
-                top = tg.safeAreaInset.top;
-            } else {
-                top = 20;
-            }
-            document.documentElement.style.setProperty('--safe-top', top + 'px');
-        }
-
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            setTimeout(applySafeArea, 100);
-        } else {
-            applySafeArea();
-        }
-
         let history = ['home'];
 
         function showPage(id) {
@@ -470,7 +448,6 @@
         function openPage(id) {
             history.push(id);
             showPage(id);
-            if (tg?.BackButton) tg.BackButton.show();
         }
 
         function goBack() {
@@ -478,10 +455,7 @@
                 history.pop();
                 showPage(history[history.length - 1]);
             }
-            if (history.length === 1 && tg?.BackButton) tg.BackButton.hide();
         }
-
-        tg?.BackButton?.onClick(goBack);
 
         function toggleMenu() {
             document.getElementById('side-menu').classList.toggle('show');
@@ -493,12 +467,10 @@
             document.getElementById('menu-overlay').classList.remove('show');
         }
 
-        // Плавный скролл вверх при возврате на главную
         function goHome() {
             closeMenu();
             history = ['home'];
             showPage('home');
-            if (tg?.BackButton) tg.BackButton.hide();
             
             const homePage = document.getElementById('page-home');
             homePage.scrollTo({
@@ -529,7 +501,6 @@
             currentPos = pos;
             if (!animate) {
                 track.classList.add('no-transition');
-                // Форсируем перерисовку перед мгновенным прыжком
                 void track.offsetWidth;
             } else {
                 track.classList.remove('no-transition');
@@ -551,9 +522,7 @@
 
         function prevSlide() {
             if (currentPos === 0) {
-                // Исправление бага дергания: сначала мгновенно ставим клон, потом анимируем назад
                 moveTo(2, false);
-                // Используем двойной rAF для гарантии применения стилей без перехода
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         moveTo(1, true);
@@ -726,4 +695,3 @@
     </script>
 </body>
 </html>
-
