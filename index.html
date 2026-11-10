@@ -60,7 +60,7 @@
             position: relative;
         }
 
-        /* Каталог и О бренде */
+        /* Каталог */
         .header-left {
             position: absolute;
             left: 1.5cm;
@@ -162,7 +162,7 @@
         .catalog-dropdown {
             position: absolute;
             top: 100px;
-            left: 0;
+            left: 1.5cm;
             background: #fff;
             min-width: 280px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -172,6 +172,7 @@
             transform: translateY(-10px);
             transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
             padding: 16px 0;
+            border-radius: 8px;
         }
 
         .catalog-dropdown.show {
@@ -201,21 +202,6 @@
 
         .catalog-dropdown li:active {
             background: #e8e8e8;
-        }
-
-        .menu-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 40;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .menu-overlay.show {
-            opacity: 1;
-            visibility: visible;
         }
 
         .side-menu-overlay {
@@ -461,8 +447,6 @@
             </ul>
         </div>
 
-        <div class="menu-overlay" id="menu-overlay" onclick="closeCatalog()"></div>
-
         <div class="content">
             <div class="page active" id="page-home">
                 <div class="home-scroll">
@@ -502,7 +486,7 @@
             </div>
 
             <div class="page dev-page" id="page-korzina">
-                <h2>🛒 Корзина</h2>
+                <h2> Корзина</h2>
                 <p>В разработке</p>
             </div>
             <div class="page dev-page" id="page-profile">
@@ -567,16 +551,13 @@
             catalogOpen = !catalogOpen;
             const btn = document.getElementById('catalog-btn');
             const dropdown = document.getElementById('catalog-dropdown');
-            const overlay = document.getElementById('menu-overlay');
             
             if (catalogOpen) {
                 btn.classList.add('open');
                 dropdown.classList.add('show');
-                overlay.classList.add('show');
             } else {
                 btn.classList.remove('open');
                 dropdown.classList.remove('show');
-                overlay.classList.remove('show');
             }
         }
 
@@ -584,18 +565,14 @@
             catalogOpen = false;
             const btn = document.getElementById('catalog-btn');
             const dropdown = document.getElementById('catalog-dropdown');
-            const overlay = document.getElementById('menu-overlay');
             
             btn.classList.remove('open');
             dropdown.classList.remove('show');
-            overlay.classList.remove('show');
         }
 
         function selectCatalogItem(item) {
             closeCatalog();
-            // Здесь можно добавить переход к категории
             console.log('Выбрана категория:', item);
-            // Например, прокрутка к нужной секции
             const categories = document.querySelectorAll('.category-title');
             categories.forEach(cat => {
                 if (cat.textContent.toLowerCase().includes(item.toLowerCase())) {
@@ -603,6 +580,16 @@
                 }
             });
         }
+
+        // Закрытие каталога при клике в любом месте страницы
+        document.addEventListener('click', (e) => {
+            const catalogBtn = document.getElementById('catalog-btn');
+            const catalogDropdown = document.getElementById('catalog-dropdown');
+            
+            if (catalogOpen && !catalogBtn.contains(e.target) && !catalogDropdown.contains(e.target)) {
+                closeCatalog();
+            }
+        });
 
         function toggleMenu() {
             document.getElementById('side-menu').classList.toggle('show');
@@ -694,9 +681,8 @@
             const screenWidth = window.innerWidth;
             const touchX = touch.clientX;
             
-            // Проверяем, что свайп начинается сбоку экрана (первые/последние 20% экрана)
             if (touchX > screenWidth * 0.2 && touchX < screenWidth * 0.8) {
-                return; // Игнорируем свайп в центре экрана
+                return;
             }
             
             isDragging = true;
@@ -712,16 +698,15 @@
             const diffX = touch.clientX - startX;
             const diffY = touch.clientY - startY;
             
-            // Определяем направление свайпа
             if (!isHorizontalSwipe && Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
-                return; // Ещё не определили направление
+                return;
             }
             
             if (!isHorizontalSwipe) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     isHorizontalSwipe = true;
                 } else {
-                    isDragging = false; // Вертикальный свайп - игнорируем
+                    isDragging = false;
                     return;
                 }
             }
