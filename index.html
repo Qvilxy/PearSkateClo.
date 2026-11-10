@@ -56,15 +56,15 @@
         }
 
         .header-top {
-            height: 60px;
+            height: 100px;
             position: relative;
         }
 
         .menu-btn {
             position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: calc(22% - 45px);
+            top: 68%;
+            transform: translate(-50%, -50%);
             background: none;
             border: none;
             cursor: pointer;
@@ -76,20 +76,20 @@
         }
 
         .menu-btn img {
-            width: 24px;
-            height: 24px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             display: block;
         }
 
         .logo-wrapper {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 52%;
+            left: 44%;
+            transform: translate(-50%, -40%);
             z-index: 20;
-            width: 120px;
-            height: 75px;
+            width: 180px;
+            height: 115px;
             cursor: pointer;
         }
 
@@ -103,7 +103,7 @@
         .header-right {
             position: absolute;
             right: 16px;
-            top: 50%;
+            top: 68%;
             transform: translateY(-50%);
             display: flex;
             align-items: center;
@@ -122,15 +122,15 @@
         }
 
         .icon-btn img {
-            width: 28px;
-            height: 28px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
             display: block;
         }
 
         .header-bottom {
             background: #15355B;
-            height: 14px;
+            height: 22px;
         }
 
         .side-menu-overlay {
@@ -159,7 +159,7 @@
             z-index: 60;
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 80px 20px 24px;
+            padding: 100px 20px 24px;
             overflow-y: auto;
         }
         .side-menu.show { transform: translateX(0); }
@@ -214,7 +214,7 @@
         .slideshow {
             position: relative;
             width: 100%;
-            height: calc(100vh - 74px);
+            height: calc(100vh - 122px);
             flex-shrink: 0;
             overflow: hidden;
         }
@@ -326,7 +326,7 @@
             align-items: center;
             justify-content: center;
             gap: 16px;
-            min-height: calc(100vh - 74px);
+            min-height: calc(100vh - 122px);
         }
         .dev-page.active { display: flex; }
         .dev-page h2 { font-size: 24px; color: #333; }
@@ -544,8 +544,9 @@
             const screenWidth = window.innerWidth;
             const touchX = touch.clientX;
             
+            // Проверяем, что свайп начинается сбоку экрана (первые/последние 20% экрана)
             if (touchX > screenWidth * 0.2 && touchX < screenWidth * 0.8) {
-                return;
+                return; // Игнорируем свайп в центре экрана
             }
             
             isDragging = true;
@@ -561,15 +562,16 @@
             const diffX = touch.clientX - startX;
             const diffY = touch.clientY - startY;
             
+            // Определяем направление свайпа
             if (!isHorizontalSwipe && Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
-                return;
+                return; // Ещё не определили направление
             }
             
             if (!isHorizontalSwipe) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     isHorizontalSwipe = true;
                 } else {
-                    isDragging = false;
+                    isDragging = false; // Вертикальный свайп - игнорируем
                     return;
                 }
             }
@@ -724,6 +726,7 @@
             }, index * 1000);
         });
 
+        // Показываем loading screen через 0.5 секунды
         setTimeout(() => {
             document.getElementById('loading-screen').classList.add('visible');
         }, 500);
