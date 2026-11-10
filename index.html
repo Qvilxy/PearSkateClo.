@@ -24,9 +24,6 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow-x: hidden;
-            /* Фон за адресной строкой синий (как шапка), контент начинается ниже статус-бара */
-            padding-top: constant(safe-area-inset-top);
-            padding-top: env(safe-area-inset-top);
         }
 
         #loading-screen {
@@ -56,6 +53,9 @@
             flex-shrink: 0;
             z-index: 15;
             background: #7388A3;
+            /* Синий фон заходит под адресную строку, шапка чуть выше */
+            padding-top: constant(safe-area-inset-top);
+            padding-top: env(safe-area-inset-top);
         }
 
         .header-top {
