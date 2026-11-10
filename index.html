@@ -62,13 +62,13 @@
 
         .menu-btn {
             position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: calc(22% - 45px);
+            top: 68%;
+            transform: translate(-50%, -50%);
             background: none;
             border: none;
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -76,17 +76,17 @@
         }
 
         .menu-btn img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             display: block;
         }
 
         .logo-wrapper {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 52%;
+            left: 44%;
+            transform: translate(-50%, -40%);
             z-index: 20;
             width: 180px;
             height: 115px;
@@ -100,16 +100,14 @@
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
         }
 
-        /* ===== ИСПРАВЛЕННОЕ ВЫРАВНИВАНИЕ ИКОНОК ===== */
         .header-right {
             position: absolute;
             right: 16px;
-            top: 50%;
+            top: 68%;
             transform: translateY(-50%);
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 16px; /* Расстояние между иконками на мобильных */
+            gap: 4px;
             z-index: 10;
         }
 
@@ -121,19 +119,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Фиксированные размеры контейнера для гарантии одинаковой высоты */
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
         }
 
         .icon-btn img {
-            /* Фиксированные размеры самой иконки */
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
             display: block;
         }
-        /* ============================================== */
 
         .header-bottom {
             background: #15355B;
@@ -159,14 +154,14 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 280px;
-            max-width: 80%;
+            width: 200px;
+            max-width: 70%;
             height: 100%;
             background: #fff;
             z-index: 60;
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 100px 24px 24px;
+            padding: 100px 20px 24px;
             overflow-y: auto;
         }
         .side-menu.show { transform: translateX(0); }
@@ -187,8 +182,8 @@
         }
 
         .side-menu li {
-            padding: 8px 4px;
-            font-size: 16px;
+            padding: 5px 4px;
+            font-size: 15px;
             color: #333;
             cursor: pointer;
             border-radius: 6px;
@@ -339,42 +334,23 @@
         .dev-page h2 { font-size: 24px; color: #333; }
         .dev-page p { color: #888; font-size: 16px; }
 
-        /* ===== АДАПТАЦИЯ ДЛЯ КОМПЬЮТЕРНОЙ ВЕРСИИ ===== */
+        /* ===== ТОЛЬКО ДЛЯ ПК ВЕРСИИ: иконки корзины и профиля ===== */
         @media (min-width: 768px) {
-            .header-top {
-                height: 120px;
-            }
-
-            .menu-btn {
-                left: 40px;
-            }
-            .menu-btn img {
-                width: 36px;
-                height: 36px;
-            }
-
-            .logo-wrapper {
-                width: 240px;
-                height: 150px;
-            }
-
             .header-right {
                 right: 40px;
-                gap: 32px; /* Увеличенное расстояние между иконками на ПК */
+                top: 50%;
+                transform: translateY(-50%);
+                gap: 20px;
             }
 
             .icon-btn {
-                width: 48px;
-                height: 48px;
+                width: 32px;
+                height: 32px;
             }
 
             .icon-btn img {
-                width: 36px;
-                height: 36px;
-            }
-
-            .side-menu {
-                width: 320px;
+                width: 32px;
+                height: 32px;
             }
         }
     </style>
@@ -398,10 +374,10 @@
                 </div>
 
                 <div class="header-right">
-                    <button class="icon-btn" onclick="openPage('korzina')" aria-label="Корзина">
+                    <button class="icon-btn" onclick="openPage('korzina')">
                         <img src="assets/iconkorzina.png" alt="Корзина">
                     </button>
-                    <button class="icon-btn" onclick="openPage('profile')" aria-label="Профиль">
+                    <button class="icon-btn" onclick="openPage('profile')">
                         <img src="assets/iconprofile.png" alt="Профиль">
                     </button>
                 </div>
