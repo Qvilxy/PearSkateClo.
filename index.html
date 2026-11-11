@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Pear Skate Clo.</title>
 
-    <!-- Inter ExtraBold — шрифт «Каталог» как на верхнем фото (с кириллицей) -->
+    <!-- Inter ExtraBold — шрифт «Каталог» (с кириллицей) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
@@ -75,14 +75,13 @@
             background: #7388A3;
         }
 
-        /* Чёрная полоса сверху шапки (ПК). Не занимает место в потоке,
-           поэтому логотип остаётся ровно на своём месте */
+        /* Верхняя полоса шапки — прозрачная (место в шапке сохранено) */
         .header-stripe-top {
             position: absolute;
             top: 0; left: 0;
             width: 100%;
             height: 22px;
-            background: #000;
+            background: transparent;
             z-index: 5;
         }
 
@@ -191,6 +190,16 @@
             height: 36px;
             object-fit: contain;
             display: block;
+        }
+
+        /* Иконки не теряют качество: целые размеры в CSS + аккуратный рендеринг.
+           Исходные PNG желательно держать в 2–3× больше отображаемого размера */
+        .icon-btn img,
+        .catalog-menu-icon,
+        .catalog-telegram img {
+            image-rendering: auto;
+            image-rendering: -webkit-optimize-contrast;
+            -ms-interpolation-mode: nearest-neighbor;
         }
 
         .header-bottom {
@@ -466,30 +475,32 @@
 
             .catalog-menu-icon { display: block; }
 
-            /* Чёрная полоса — только на ПК */
+            /* Верхняя полоса — только на ПК */
             .header-stripe-top { display: none; }
 
+            /* Меню: 1 см от левого края (справа от края экрана) */
             .header-left {
-                left: 14px;
+                left: 1cm;
                 top: 68%;
             }
 
-            /* Меню: 52px − 30% = 36.4px */
+            /* Меню: 36px (целый размер — без размытия) */
             .catalog-menu-icon {
-                width: 36.4px;
-                height: 36.4px;
+                width: 36px;
+                height: 36px;
             }
 
+            /* Корзина и профиль: 1 см от правого края, 0.5 см между ними */
             .header-right {
-                right: 14px;
+                right: 1cm;
                 top: 68%;
-                gap: 12px;
+                gap: 0.5cm;
             }
 
-            /* Корзина и профиль: 52px − 15% = 44.2px */
+            /* Корзина и профиль: 44px (целый размер — без размытия) */
             .icon-btn img {
-                width: 44.2px;
-                height: 44.2px;
+                width: 44px;
+                height: 44px;
             }
 
             /* Каталог выпадает под шапкой, на всю ширину */
@@ -533,8 +544,7 @@
 
         /* ================= ПК ВЕРСИЯ ================= */
         @media (min-width: 769px) {
-            /* Каталог и иконки — по центру пространства между полосами
-               (полосы: 0–22px и 100–122px, середина синей зоны ≈ 61px) */
+            /* Каталог и иконки — между полосами шапки */
             .header-left {
                 left: 1.5cm;
                 top: 61%;
@@ -566,10 +576,10 @@
                 margin-left: 0;
             }
 
-            /* Корзина и профиль: 84px − 30% = 58.8px */
+            /* Корзина и профиль: 58.8px − 15% ≈ 50px */
             .icon-btn img {
-                width: 58.8px;
-                height: 58.8px;
+                width: 50px;
+                height: 50px;
             }
 
             .slideshow-indicators {
@@ -592,7 +602,7 @@
     <div id="app-container">
 
         <div class="header">
-            <!-- Чёрная полоса сверху шапки (видна только на ПК) -->
+            <!-- Прозрачная верхняя полоса (видна только структура на ПК) -->
             <div class="header-stripe-top"></div>
 
             <div class="header-top">
