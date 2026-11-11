@@ -327,6 +327,13 @@
             flex-shrink: 0;
         }
 
+        /* picture-обёртка для разных фото на телефоне и ПК */
+        .slide picture {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
         .slide img {
             width: 100%;
             height: 100%;
@@ -367,7 +374,8 @@
         }
 
         .category-title {
-            font-size: 22px;
+            /* 22px × 1.5 = 33px — заголовки увеличены в 1.5 раза */
+            font-size: 33px;
             font-weight: 700;
             font-style: italic;
             color: #111;
@@ -449,22 +457,22 @@
             /* Каталог: 1.5 см от левого края */
             .header-left { left: 1.5cm; }
 
-            /* "Каталог" — шрифт как на фото ("БЕСПЛАТНАЯ"):
-               прямой (без курсива) жирный гротеск Arial/Helvetica,
-               белый, 32px */
+            /* "Каталог": уменьшено в 1.5 раза (32px / 1.5 ≈ 21.3px),
+               прямой жирный Arial, белый */
             .catalog-btn {
                 color: #fff;
                 font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
                 font-style: normal;
                 font-weight: 700;
-                font-size: 32px;
+                font-size: calc(32px / 1.5);
                 letter-spacing: 0.5px;
             }
             .catalog-btn:hover { color: #e0e0e0; }
 
+            /* Стрелочка той же толщины, что и буквы (Arial Bold ~3px) */
             .catalog-arrow {
-                border-right-color: #fff;
-                border-bottom-color: #fff;
+                border-right: 3px solid #fff;
+                border-bottom: 3px solid #fff;
             }
 
             /* Иконки: 1.5 см от правого края, 0.6 см между ними */
@@ -538,9 +546,26 @@
                 <div class="home-scroll">
                     <div class="slideshow" id="slideshow">
                         <div class="slideshow-track" id="slideshow-track">
-                            <div class="slide"><img src="assets/sadtree.png" alt="Slide 1"></div>
-                            <div class="slide"><img src="assets/voda.png" alt="Slide 2"></div>
-                            <div class="slide"><img src="assets/sadtree.png" alt="Slide 1 clone"></div>
+                            <!-- Телефон: sadtree.png / graffity.png
+                                 ПК: big_sadtree.png / big_graffity.png -->
+                            <div class="slide">
+                                <picture>
+                                    <source media="(min-width: 769px)" srcset="assets/big_sadtree.png">
+                                    <img src="assets/sadtree.png" alt="Slide 1">
+                                </picture>
+                            </div>
+                            <div class="slide">
+                                <picture>
+                                    <source media="(min-width: 769px)" srcset="assets/big_graffity.png">
+                                    <img src="assets/graffity.png" alt="Slide 2">
+                                </picture>
+                            </div>
+                            <div class="slide">
+                                <picture>
+                                    <source media="(min-width: 769px)" srcset="assets/big_sadtree.png">
+                                    <img src="assets/sadtree.png" alt="Slide 1 clone">
+                                </picture>
+                            </div>
                         </div>
                         <div class="slideshow-indicators">
                             <div class="indicator active" id="ind-0"></div>
@@ -564,6 +589,13 @@
                         <div class="category-block">
                             <div class="category-title">Штаны</div>
                             <div class="carousel" data-image="assets/pants.png" data-count="6">
+                                <div class="carousel-track"></div>
+                            </div>
+                        </div>
+                        <!-- Новый вращающийся блок: Аксессуары -->
+                        <div class="category-block">
+                            <div class="category-title">Аксессуары</div>
+                            <div class="carousel" data-image="assets/kepka.png" data-count="6">
                                 <div class="carousel-track"></div>
                             </div>
                         </div>
@@ -663,12 +695,25 @@
 
         function selectCatalogItem(item) {
             closeCatalog();
-            console.log('Выбрана категория:', item);
-            const categories = document.querySelectorAll('.category-title');
-            categories.forEach(cat => {
-                if (cat.textContent.toLowerCase().includes(item.toLowerCase())) {
-                    cat.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+
+            // Переходим на главную (если были в другом разделе), затем скроллим к категории
+            history = ['home'];
+            showPage('home');
+
+            const targetName = {
+                'Худи': 'Худи',
+                'Футболка': 'Футболки',
+                'Штаны': 'Штаны',
+                'Аксессуары': 'Аксессуары'
+            }[item] || item;
+
+            requestAnimationFrame(() => {
+                const categories = document.querySelectorAll('.category-title');
+                categories.forEach(cat => {
+                    if (cat.textContent.trim().toLowerCase() === targetName.toLowerCase()) {
+                        cat.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
             });
         }
 
@@ -831,7 +876,8 @@
             const speed = 0.4;
             const trackEl = carousel.querySelector('.carousel-track');
 
-            const direction = index === 1 ? -1 : 1;
+            // Чередуем направление: чётные блоки вправо, нечётные влево
+            const direction = index % 2 === 0 ? 1 : -1;
 
             const totalItems = count * 2;
             for (let i = 0; i < totalItems; i++) {
