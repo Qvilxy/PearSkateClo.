@@ -60,7 +60,7 @@
             position: relative;
         }
 
-        /* Каталог и О бренде */
+        /* Каталог */
         .header-left {
             position: absolute;
             left: 16px;
@@ -90,6 +90,14 @@
             color: #555;
         }
 
+        /* Иконка меню для телефона (на ПК скрыта) */
+        .catalog-menu-icon {
+            display: none;
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
         .catalog-arrow {
             width: 10px;
             height: 10px;
@@ -104,18 +112,7 @@
             transform: rotate(225deg);
         }
 
-        .about-brand {
-            font-size: 16px;
-            font-weight: 500;
-            color: #111;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .about-brand:hover {
-            color: #555;
-        }
-
+        /* ЛОГОТИП — НЕ ИЗМЕНЁН */
         .logo-wrapper {
             position: absolute;
             top: 52%;
@@ -212,11 +209,13 @@
             background: #e8e8e8;
         }
 
+        /* Оверлей: прозрачный — фон НЕ затемняется,
+           но клик мимо меню по-прежнему закрывает каталог */
         .menu-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
+            background: transparent;
             z-index: 40;
             opacity: 0;
             visibility: hidden;
@@ -425,6 +424,55 @@
         .dev-page.active { display: flex; }
         .dev-page h2 { font-size: 24px; color: #333; }
         .dev-page p { color: #888; font-size: 16px; }
+
+        /* ================= ТЕЛЕФОННАЯ ВЕРСИЯ ================= */
+        @media (max-width: 768px) {
+            /* Вместо текста "Каталог" — иконка menu.png */
+            .catalog-label,
+            .catalog-arrow { display: none; }
+
+            .catalog-menu-icon { display: block; }
+
+            /* Узкий каталог — обрезан по красной линии со скриншота */
+            .catalog-dropdown {
+                width: 37vw;
+                min-width: 0;
+            }
+
+            .catalog-dropdown li {
+                padding: 12px 16px;
+            }
+        }
+
+        /* ================= ПК ВЕРСИЯ ================= */
+        @media (min-width: 769px) {
+            /* Каталог: 1.5 см от левого края */
+            .header-left { left: 1.5cm; }
+
+            /* Белый "Каталог", шрифт как на фото (Times New Roman) */
+            .catalog-btn {
+                color: #fff;
+                font-family: 'Times New Roman', Times, serif;
+                font-weight: 400;
+            }
+            .catalog-btn:hover { color: #e0e0e0; }
+
+            .catalog-arrow {
+                border-right-color: #fff;
+                border-bottom-color: #fff;
+            }
+
+            /* Иконки: 1.5 см от правого края, 1 см между ними */
+            .header-right {
+                right: 1.5cm;
+                gap: 1cm;
+            }
+
+            /* Индикаторы слайдов опущены на 3 мм */
+            .slideshow-indicators {
+                bottom: calc(20px - 3mm);
+            }
+        }
     </style>
 </head>
 <body>
@@ -439,10 +487,10 @@
             <div class="header-top">
                 <div class="header-left">
                     <button class="catalog-btn" id="catalog-btn" onclick="toggleCatalog()">
-                        <span>Каталог</span>
+                        <img src="assets/menu.png" alt="Каталог" class="catalog-menu-icon">
+                        <span class="catalog-label">Каталог</span>
                         <div class="catalog-arrow"></div>
                     </button>
-                    <span class="about-brand" onclick="openPage('about')">О бренде</span>
                 </div>
 
                 <div class="logo-wrapper" onclick="goHome()">
@@ -603,9 +651,7 @@
 
         function selectCatalogItem(item) {
             closeCatalog();
-            // Здесь можно добавить переход к категории
             console.log('Выбрана категория:', item);
-            // Например, прокрутка к нужной секции
             const categories = document.querySelectorAll('.category-title');
             categories.forEach(cat => {
                 if (cat.textContent.toLowerCase().includes(item.toLowerCase())) {
@@ -704,9 +750,8 @@
             const screenWidth = window.innerWidth;
             const touchX = touch.clientX;
             
-            // Проверяем, что свайп начинается сбоку экрана (первые/последние 20% экрана)
             if (touchX > screenWidth * 0.2 && touchX < screenWidth * 0.8) {
-                return; // Игнорируем свайп в центре экрана
+                return;
             }
             
             isDragging = true;
@@ -722,16 +767,15 @@
             const diffX = touch.clientX - startX;
             const diffY = touch.clientY - startY;
             
-            // Определяем направление свайпа
             if (!isHorizontalSwipe && Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
-                return; // Ещё не определили направление
+                return;
             }
             
             if (!isHorizontalSwipe) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     isHorizontalSwipe = true;
                 } else {
-                    isDragging = false; // Вертикальный свайп - игнорируем
+                    isDragging = false;
                     return;
                 }
             }
@@ -886,7 +930,6 @@
             }, index * 1000);
         });
 
-        // Показываем loading screen через 0.5 секунды
         setTimeout(() => {
             document.getElementById('loading-screen').classList.add('visible');
         }, 500);
