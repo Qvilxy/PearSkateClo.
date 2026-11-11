@@ -449,11 +449,12 @@
             /* Каталог: 1.5 см от левого края */
             .header-left { left: 1.5cm; }
 
-            /* Белый "Каталог", шрифт как на фото (Times New Roman) */
+            /* Белый "Каталог", Times New Roman, ЖИРНЫЙ, в 2 раза крупнее (16px -> 32px) */
             .catalog-btn {
                 color: #fff;
                 font-family: 'Times New Roman', Times, serif;
-                font-weight: 400;
+                font-weight: 700;
+                font-size: 32px;
             }
             .catalog-btn:hover { color: #e0e0e0; }
 
@@ -462,15 +463,22 @@
                 border-bottom-color: #fff;
             }
 
-            /* Иконки: 1.5 см от правого края, 1 см между ними */
+            /* Иконки: 1.5 см от правого края, 0.6 см между ними */
             .header-right {
                 right: 1.5cm;
-                gap: 1cm;
+                gap: 0.6cm;
             }
 
             /* Индикаторы слайдов опущены на 3 мм */
             .slideshow-indicators {
                 bottom: calc(20px - 3mm);
+            }
+
+            /* Крупные плитки: на экране всегда ~3.5 вещи (3 целых + часть 4-й).
+               Высота пропорциональна ширине (формат 4:5, как у 160x200) */
+            .carousel-item {
+                width: calc((100vw - 60px) / 3.5);
+                height: calc((100vw - 60px) / 3.5 * 1.25);
             }
         }
     </style>
@@ -829,10 +837,23 @@
                 trackEl.appendChild(item);
             }
 
-            const itemWidth = 160;
+            // Ширина плитки измеряется реально (на ПК плитки крупные, на телефоне 160px),
+            // чтобы бесконечная прокрутка не "прыгала"
             const gap = 12;
-            const step = itemWidth + gap;
-            const singleSetWidth = count * step;
+            let itemWidth = 160;
+            let step = itemWidth + gap;
+            let singleSetWidth = count * step;
+
+            function measure() {
+                const firstItem = trackEl.querySelector('.carousel-item');
+                const w = firstItem ? firstItem.getBoundingClientRect().width : 0;
+                if (w > 0) {
+                    itemWidth = w;
+                    step = itemWidth + gap;
+                    singleSetWidth = count * step;
+                }
+            }
+            measure();
 
             let offset = index * (singleSetWidth / 3);
             let autoInterval;
@@ -840,6 +861,13 @@
             let touchStartX = 0;
             let touchStartOffset = 0;
             let resumeTimeout;
+
+            // Пересчёт при изменении размера окна / показе приложения
+            window.addEventListener('resize', () => {
+                measure();
+                offset = ((offset % singleSetWidth) + singleSetWidth) % singleSetWidth;
+                trackEl.style.transform = `translateX(${-offset}px)`;
+            });
 
             function autoScroll() {
                 if (isTouched) return;
@@ -938,6 +966,8 @@
             setTimeout(() => {
                 document.getElementById('loading-screen').classList.add('hidden');
                 document.getElementById('app-container').classList.add('visible');
+                // Приложение стало видимым — пересчитываем реальные размеры плиток
+                window.dispatchEvent(new Event('resize'));
             }, 1500);
         });
     </script>
