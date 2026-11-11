@@ -7,6 +7,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Pear Skate Clo.</title>
+    <!-- Шрифт как на логотипе: жирный наклонный serif, с кириллицей -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@1,900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -449,11 +453,14 @@
             /* Каталог: 1.5 см от левого края */
             .header-left { left: 1.5cm; }
 
-            /* Белый "Каталог", Times New Roman, ЖИРНЫЙ, в 2 раза крупнее (16px -> 32px) */
+            /* "Каталог" — шрифт как на логотипе:
+               Bitter Black Italic (жирный наклонный serif, кириллица),
+               белый, 32px */
             .catalog-btn {
                 color: #fff;
-                font-family: 'Times New Roman', Times, serif;
-                font-weight: 700;
+                font-family: 'Bitter', 'Times New Roman', serif;
+                font-style: italic;
+                font-weight: 900;
                 font-size: 32px;
             }
             .catalog-btn:hover { color: #e0e0e0; }
