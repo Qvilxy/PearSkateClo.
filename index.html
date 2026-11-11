@@ -60,10 +60,10 @@
             position: relative;
         }
 
-        /* Каталог */
+        /* Каталог и О бренде */
         .header-left {
             position: absolute;
-            left: 1.5cm;
+            left: 16px;
             top: 68%;
             transform: translateY(-50%);
             display: flex;
@@ -81,23 +81,20 @@
             align-items: center;
             gap: 6px;
             font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            letter-spacing: 0.5px;
-            transition: color 0.2s, text-shadow 0.2s;
+            font-weight: 500;
+            color: #111;
+            transition: color 0.2s;
         }
 
         .catalog-btn:hover {
-            color: #f0f0f0;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            color: #555;
         }
 
         .catalog-arrow {
             width: 10px;
             height: 10px;
-            border-right: 2px solid #fff;
-            border-bottom: 2px solid #fff;
+            border-right: 2px solid #111;
+            border-bottom: 2px solid #111;
             transform: rotate(45deg);
             transition: transform 0.3s ease;
             margin-top: 2px;
@@ -105,6 +102,18 @@
 
         .catalog-btn.open .catalog-arrow {
             transform: rotate(225deg);
+        }
+
+        .about-brand {
+            font-size: 16px;
+            font-weight: 500;
+            color: #111;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .about-brand:hover {
+            color: #555;
         }
 
         .logo-wrapper {
@@ -127,12 +136,12 @@
 
         .header-right {
             position: absolute;
-            right: 1.5cm;
+            right: 16px;
             top: 68%;
             transform: translateY(-50%);
             display: flex;
             align-items: center;
-            gap: 1cm;
+            gap: 4px;
             z-index: 10;
         }
 
@@ -162,7 +171,7 @@
         .catalog-dropdown {
             position: absolute;
             top: 100px;
-            left: 1.5cm;
+            left: 0;
             background: #fff;
             min-width: 280px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -172,7 +181,6 @@
             transform: translateY(-10px);
             transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
             padding: 16px 0;
-            border-radius: 8px;
         }
 
         .catalog-dropdown.show {
@@ -202,6 +210,21 @@
 
         .catalog-dropdown li:active {
             background: #e8e8e8;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .menu-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .side-menu-overlay {
@@ -416,9 +439,10 @@
             <div class="header-top">
                 <div class="header-left">
                     <button class="catalog-btn" id="catalog-btn" onclick="toggleCatalog()">
-                        <span>КАТАЛОГ</span>
+                        <span>Каталог</span>
                         <div class="catalog-arrow"></div>
                     </button>
+                    <span class="about-brand" onclick="openPage('about')">О бренде</span>
                 </div>
 
                 <div class="logo-wrapper" onclick="goHome()">
@@ -446,6 +470,8 @@
                 <li onclick="selectCatalogItem('Аксессуары')">Аксессуары</li>
             </ul>
         </div>
+
+        <div class="menu-overlay" id="menu-overlay" onclick="closeCatalog()"></div>
 
         <div class="content">
             <div class="page active" id="page-home">
@@ -486,7 +512,7 @@
             </div>
 
             <div class="page dev-page" id="page-korzina">
-                <h2> Корзина</h2>
+                <h2>🛒 Корзина</h2>
                 <p>В разработке</p>
             </div>
             <div class="page dev-page" id="page-profile">
@@ -551,13 +577,16 @@
             catalogOpen = !catalogOpen;
             const btn = document.getElementById('catalog-btn');
             const dropdown = document.getElementById('catalog-dropdown');
+            const overlay = document.getElementById('menu-overlay');
             
             if (catalogOpen) {
                 btn.classList.add('open');
                 dropdown.classList.add('show');
+                overlay.classList.add('show');
             } else {
                 btn.classList.remove('open');
                 dropdown.classList.remove('show');
+                overlay.classList.remove('show');
             }
         }
 
@@ -565,14 +594,18 @@
             catalogOpen = false;
             const btn = document.getElementById('catalog-btn');
             const dropdown = document.getElementById('catalog-dropdown');
+            const overlay = document.getElementById('menu-overlay');
             
             btn.classList.remove('open');
             dropdown.classList.remove('show');
+            overlay.classList.remove('show');
         }
 
         function selectCatalogItem(item) {
             closeCatalog();
+            // Здесь можно добавить переход к категории
             console.log('Выбрана категория:', item);
+            // Например, прокрутка к нужной секции
             const categories = document.querySelectorAll('.category-title');
             categories.forEach(cat => {
                 if (cat.textContent.toLowerCase().includes(item.toLowerCase())) {
@@ -580,16 +613,6 @@
                 }
             });
         }
-
-        // Закрытие каталога при клике в любом месте страницы
-        document.addEventListener('click', (e) => {
-            const catalogBtn = document.getElementById('catalog-btn');
-            const catalogDropdown = document.getElementById('catalog-dropdown');
-            
-            if (catalogOpen && !catalogBtn.contains(e.target) && !catalogDropdown.contains(e.target)) {
-                closeCatalog();
-            }
-        });
 
         function toggleMenu() {
             document.getElementById('side-menu').classList.toggle('show');
@@ -681,8 +704,9 @@
             const screenWidth = window.innerWidth;
             const touchX = touch.clientX;
             
+            // Проверяем, что свайп начинается сбоку экрана (первые/последние 20% экрана)
             if (touchX > screenWidth * 0.2 && touchX < screenWidth * 0.8) {
-                return;
+                return; // Игнорируем свайп в центре экрана
             }
             
             isDragging = true;
@@ -698,15 +722,16 @@
             const diffX = touch.clientX - startX;
             const diffY = touch.clientY - startY;
             
+            // Определяем направление свайпа
             if (!isHorizontalSwipe && Math.abs(diffX) < 10 && Math.abs(diffY) < 10) {
-                return;
+                return; // Ещё не определили направление
             }
             
             if (!isHorizontalSwipe) {
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     isHorizontalSwipe = true;
                 } else {
-                    isDragging = false;
+                    isDragging = false; // Вертикальный свайп - игнорируем
                     return;
                 }
             }
