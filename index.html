@@ -192,14 +192,13 @@
             display: block;
         }
 
-        /* Иконки не теряют качество: целые размеры в CSS + аккуратный рендеринг.
+        /* Иконки не теряют качество: аккуратный рендеринг.
            Исходные PNG желательно держать в 2–3× больше отображаемого размера */
         .icon-btn img,
         .catalog-menu-icon,
         .catalog-telegram img {
             image-rendering: auto;
             image-rendering: -webkit-optimize-contrast;
-            -ms-interpolation-mode: nearest-neighbor;
         }
 
         .header-bottom {
@@ -397,10 +396,18 @@
             z-index: 10;
         }
 
+        /* Индикаторы кликабельны; невидимая зона扩大了 тап-область */
         .indicator {
             height: 4px;
             border-radius: 2px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+        }
+        .indicator::after {
+            content: '';
+            position: absolute;
+            inset: -12px -6px;
         }
         .indicator.active { width: 32px; background: #fff; }
         .indicator.inactive { width: 16px; background: rgba(255,255,255,0.5); }
@@ -484,7 +491,6 @@
                 top: 68%;
             }
 
-            /* Меню: 36px (целый размер — без размытия) */
             .catalog-menu-icon {
                 width: 36px;
                 height: 36px;
@@ -497,10 +503,15 @@
                 gap: 0.5cm;
             }
 
-            /* Корзина и профиль: 44px (целый размер — без размытия) */
             .icon-btn img {
                 width: 44px;
                 height: 44px;
+            }
+
+            /* Корзина на 5% меньше профиля */
+            .icon-btn-cart img {
+                width: calc(44px * 0.95);
+                height: calc(44px * 0.95);
             }
 
             /* Каталог выпадает под шапкой, на всю ширину */
@@ -568,18 +579,23 @@
             }
             .catalog-btn:hover { color: #e0e0e0; }
 
-            /* Стрелка сразу после буквы «г» */
+            /* Стрелка сразу после «г», опущена на 0.1 см */
             .catalog-arrow {
                 width: 16px;
                 height: 11px;
-                margin-top: -2px;
+                margin-top: calc(-2px + 0.1cm);
                 margin-left: 0;
             }
 
-            /* Корзина и профиль: 58.8px − 15% ≈ 50px */
             .icon-btn img {
                 width: 50px;
                 height: 50px;
+            }
+
+            /* Корзина на 5% меньше профиля */
+            .icon-btn-cart img {
+                width: calc(50px * 0.95);
+                height: calc(50px * 0.95);
             }
 
             .slideshow-indicators {
@@ -602,7 +618,7 @@
     <div id="app-container">
 
         <div class="header">
-            <!-- Прозрачная верхняя полоса (видна только структура на ПК) -->
+            <!-- Прозрачная верхняя полоса -->
             <div class="header-stripe-top"></div>
 
             <div class="header-top">
@@ -623,8 +639,8 @@
                 </div>
 
                 <div class="header-right">
-                    <button class="icon-btn" onclick="openPage('korzina')" aria-label="Корзина">
-                        <img src="assets/iconkorzina.png" alt="Корзина">
+                    <button class="icon-btn icon-btn-cart" onclick="openPage('korzina')" aria-label="Корзина">
+                        <img src="assets/icon_korzina.png" alt="Корзина">
                     </button>
                     <button class="icon-btn" onclick="openPage('profile')" aria-label="Профиль">
                         <img src="assets/icon_profile.png" alt="Профиль">
@@ -655,29 +671,33 @@
                 <div class="home-scroll">
                     <div class="slideshow" id="slideshow">
                         <div class="slideshow-track" id="slideshow-track">
-                            <!-- Телефон: sadtree / graffity · ПК: big_sadtree / big_graffity -->
+                            <!-- Телефон: sadtree / graffity · ПК: big_sadtree / big_graffity.
+                                 Если мобильный файл не загрузился — подставляется ПК-версия -->
                             <div class="slide">
                                 <picture>
                                     <source media="(min-width: 769px)" srcset="assets/big_sadtree.png">
-                                    <img src="assets/sadtree.png" alt="Pear Skate Clo. — коллекция">
+                                    <img src="assets/sadtree.png" alt="Pear Skate Clo. — коллекция" loading="eager" decoding="async"
+                                         onerror="this.onerror=null;this.src='assets/big_sadtree.png';">
                                 </picture>
                             </div>
                             <div class="slide">
                                 <picture>
                                     <source media="(min-width: 769px)" srcset="assets/big_graffity.png">
-                                    <img src="assets/graffity.png" alt="Pear Skate Clo. — граффити">
+                                    <img src="assets/graffity.png" alt="Pear Skate Clo. — граффити" loading="eager" decoding="async"
+                                         onerror="this.onerror=null;this.src='assets/big_graffity.png';">
                                 </picture>
                             </div>
                             <div class="slide">
                                 <picture>
                                     <source media="(min-width: 769px)" srcset="assets/big_sadtree.png">
-                                    <img src="assets/sadtree.png" alt="" aria-hidden="true">
+                                    <img src="assets/sadtree.png" alt="" aria-hidden="true" loading="eager" decoding="async"
+                                         onerror="this.onerror=null;this.src='assets/big_sadtree.png';">
                                 </picture>
                             </div>
                         </div>
                         <div class="slideshow-indicators">
-                            <div class="indicator active" id="ind-0"></div>
-                            <div class="indicator inactive" id="ind-1"></div>
+                            <div class="indicator active" id="ind-0" role="button" tabindex="0" aria-label="Баннер 1"></div>
+                            <div class="indicator inactive" id="ind-1" role="button" tabindex="0" aria-label="Баннер 2"></div>
                         </div>
                     </div>
 
@@ -836,6 +856,7 @@
 
         let currentPos = 0;
         let autoplayTimer;
+        let loopResetTimer;
         let isDragging = false;
         let startX = 0;
         let startY = 0;
@@ -864,7 +885,8 @@
         function nextSlide() {
             if (currentPos === 1) {
                 moveTo(2, true);
-                setTimeout(() => { moveTo(0, false); }, 500);
+                clearTimeout(loopResetTimer);
+                loopResetTimer = setTimeout(() => { moveTo(0, false); }, 500);
             } else {
                 moveTo(currentPos + 1, true);
             }
@@ -888,14 +910,12 @@
             autoplayTimer = setInterval(nextSlide, 5000);
         }
 
+        // Свайп работает по ВСЕЙ ширине баннера (раньше — только по краям,
+        // из-за чего на телефоне нельзя было долистать до graffity.png)
         slideshow.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            const screenWidth = window.innerWidth;
-            if (touch.clientX > screenWidth * 0.2 && touch.clientX < screenWidth * 0.8) return;
-
             isDragging = true;
-            startX = touch.clientX;
-            startY = touch.clientY;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
             isHorizontalSwipe = false;
         }, { passive: true });
 
@@ -941,6 +961,23 @@
             else if (diff > threshold) prevSlide();
             else moveTo(currentPos, true);
         }, { passive: true });
+
+        // Клик / тап по индикаторам — прямой переход к баннеру
+        indicators.forEach((ind, i) => {
+            ind.addEventListener('click', () => {
+                clearTimeout(loopResetTimer);
+                moveTo(i, true);
+                resetAutoplay();
+            });
+            ind.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    clearTimeout(loopResetTimer);
+                    moveTo(i, true);
+                    resetAutoplay();
+                }
+            });
+        });
 
         moveTo(0, false);
         resetAutoplay();
